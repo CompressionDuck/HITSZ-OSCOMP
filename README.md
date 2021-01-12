@@ -1,9 +1,20 @@
-# HITSZ-OSCOMP
-## 资料收集
-[赛道信息](https://github.com/oscomp/proj8-RVM)
+# 简介
 
-[虚拟化相关MOOC](https://cnmooc.org/portal/course/5610/14956.mooc)
+## 目的
 
-[RISCV手册](http://crva.ict.ac.cn/documents/RISC-V-Reader-Chinese-v2p1.pdf)
+简要介绍虚拟化，为下一阶段做准备
 
-[RISCV MOOC](http://www.icourse163.org/course/ZJU-1452997167)
+## 参考地址
+
+{% embed url="https://github.com/rcore-os/RVM/wiki" %}
+
+{% embed url="https://cnmooc.org/portal/course/5610/14956.mooc" %}
+
+{% embed url="https://ipads.se.sjtu.edu.cn/mospi/" %}
+
+\*\*\*\*
+
+
+
+
+
