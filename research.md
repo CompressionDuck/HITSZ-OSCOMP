@@ -1,6 +1,8 @@
 [不上班行不行](https://www.cnblogs.com/startkey/p/10678173.html)
 
-[[差量更新系列1\]BSDiff算法学习笔记_add_ada的博客-CSDN博客_bsdiff算法原理](https://blog.csdn.net/add_ada/article/details/51232889)
+[BSDiff算法学习笔记](https://blog.csdn.net/add_ada/article/details/51232889)
+
+[差异更新-BSDiff算法解析](https://blog.csdn.net/qazw9600/article/details/108111611)
 
 # （1）BSDiff算法包含哪些基本步骤？
 
