@@ -279,6 +279,10 @@ static int bsdiff_internal(const struct bsdiff_request req)
 }
 ```
 
+
+
+这里打印了一下I数组。原输入的文件内容是`This page is for people who already know some English`
+
 ```
 $ ./bsdiff old new patch      
 old size = 53
@@ -286,6 +290,33 @@ old string:  This page is for people who already know some English
 old string:  12345678901234567890123456789012345678901234567890123
 new size = 73
 new string:  This page is for people do not know some English, which means you are nt.
-53 45 27 12 9 35 4 16 40 23 46 0 32 6 28 33 44 8 22 31 18 13 7 48 52 1 25 10 2 50 36 21 49 29 43 47 37 26 42 19 14 38 5 17 20 15 30 11 3 51 41 39 24 
+53 45 27 12 9 35 4 16 40 23 46 0 32 6 28 33 44 8 22 31 18 13 7 48 52 1 25 10 2 50 36 21 49 29 43 47 37 26 42 19 14 38 5 17 20 15 30 11 3 51 41 39 24 34
 ```
+
+I数组的第0个数表示的是长度，不用管。
+
+```
+53 45 27 12 9 35 4 16 40 23 == ' '
+46                          == 'E'
+0 							== 'T'
+32 6 28 					== 'a'
+33 							== 'd'
+44 8 22 31 18 				== 'e'
+13							== 'f' 
+7 48 						== 'g'
+52 1 25  					== 'h'
+10 2 50 					== 'i'
+36 							== 'k'
+21 49 29 					== 'l'
+43 							== 'm'
+47 37 						== 'n'
+26 42 19 14 38  			== 'o'
+5 17 20 15 					== 'p'
+30 							== 'r'
+11 3 51 41 					== 's'
+39 24 						== 'w'
+34							== 'y'
+```
+
+
 
