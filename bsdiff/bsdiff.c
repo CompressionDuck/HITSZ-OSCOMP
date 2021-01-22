@@ -326,7 +326,7 @@ static int bsdiff_internal(const struct bsdiff_request req)
 		printf("%c", req.old[i]);
 	}
 	printf("\nold string:  ");
-	for(int i = 1;i<=req.oldsize;i++){
+	for(int i = 0;i<req.oldsize;i++){
 		printf("%d", i%10);
 	}
 	printf("\n");
@@ -336,7 +336,7 @@ static int bsdiff_internal(const struct bsdiff_request req)
 		printf("%c", req.new[i]);
 	}
 	printf("\n");
-	for(int k = 0; k < req.oldsize; k++){
+	for(int k = 0; k <= req.oldsize; k++){
 		printf("%ld ", I[k]);
 	}
 	printf("\n");
@@ -359,18 +359,24 @@ static int bsdiff_internal(const struct bsdiff_request req)
 	while (scan < req.newsize)
 	{
 		oldscore = 0;
-
+		int count = 0;
 		for (scsc = scan += len; scan < req.newsize; scan++)
 		{
             // 新版本文件和老版本文件都从数据开头开始，通过二分法，在整个后缀数组 I 中找到与新版本数据匹配最长的长度 len 和数组编号 pos。
             // 返回的数组编号即为在老版本文件中的偏移。
 			len = search(I, req.old, req.oldsize, req.new + scan, 
                          req.newsize - scan, 0, req.oldsize, &pos);
+#if DEBUG == 1
+			printf("%d: len = %ld, scan = %ld, pos = %ld, scsc = %ld, req.newsize = %ld",count++,len,scan,pos, scsc, req.newsize);
+#endif
 			// 计算出当前偏移的 old 数据与 new 数据相同的字节个数，再与 len 比较
 			for (; scsc < scan + len; scsc++)
 				if ((scsc + lastoffset < req.oldsize) &&
 					(req.old[scsc + lastoffset] == req.new[scsc]))
 					oldscore++;
+#if DEBUG == 1
+			printf(", oldscore = %ld\n",oldscore);
+#endif
 			// 如果相差小于 8 则继续 for 循环。
             // 相差小于 8，可以认为插入的数据较少，没必要切换 old 数据的 offset，每切换一次就需要进行一次 diff 和 extra 处理。
 			if (((len == oldscore) && (len != 0)) ||
