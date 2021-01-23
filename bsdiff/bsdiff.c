@@ -322,21 +322,25 @@ static int bsdiff_internal(const struct bsdiff_request req)
 	qsufsort(I, V, req.old, req.oldsize);
 #if DEBUG == 1
 	printf("old size = %ld\nold string:  ", req.oldsize);
-	for(int i = 0;i<req.oldsize;i++){
+	for (int i = 0; i < req.oldsize; i++)
+	{
 		printf("%c", req.old[i]);
 	}
 	printf("\nold string:  ");
-	for(int i = 0;i<req.oldsize;i++){
-		printf("%d", i%10);
+	for (int i = 0; i < req.oldsize; i++)
+	{
+		printf("%d", i % 10);
 	}
 	printf("\n");
 
 	printf("new size = %ld\nnew string:  ", req.newsize);
-	for(int i = 0;i<req.newsize;i++){
+	for (int i = 0; i < req.newsize; i++)
+	{
 		printf("%c", req.new[i]);
 	}
 	printf("\n");
-	for(int k = 0; k <= req.oldsize; k++){
+	for (int k = 0; k <= req.oldsize; k++)
+	{
 		printf("%ld ", I[k]);
 	}
 	printf("\n");
@@ -346,65 +350,72 @@ static int bsdiff_internal(const struct bsdiff_request req)
 	buffer = req.buffer;
 
 	/* Compute the differences, writing ctrl as we go */
-    // scan: new中要查询的字符
-	scan = 0;
-    // len: 匹配的长度
-	len = 0;
-    // pos: 代表old中相匹配的字符
-	pos = 0;
+	scan = 0; // scan: new文件中开始匹配的位置
+	len = 0;  // len: old和new匹配的长度
+	pos = 0;  //pos: old文件中开始匹配的位置
 	lastscan = 0;
 	lastpos = 0;
 	lastoffset = 0;
-    // 任务2：循环处理新文件数据，找到代码操作导致二进制数据相差字节多于 8bytes 的偏移点
+	// 任务2：循环处理新文件数据，找到代码操作导致二进制数据相差字节多于 8bytes 的偏移点
 	while (scan < req.newsize)
 	{
 		oldscore = 0;
+		printf("=================================== new row ======================\n");
 		int count = 0;
 		for (scsc = scan += len; scan < req.newsize; scan++)
 		{
-            // 新版本文件和老版本文件都从数据开头开始，通过二分法，在整个后缀数组 I 中找到与新版本数据匹配最长的长度 len 和数组编号 pos。
-            // 返回的数组编号即为在老版本文件中的偏移。
-			len = search(I, req.old, req.oldsize, req.new + scan, 
-                         req.newsize - scan, 0, req.oldsize, &pos);
+			// 新版本文件和老版本文件都从数据开头开始，通过二分法，在整个后缀数组 I 中找到与新版本数据匹配最长的长度 len 和 在old文件中的位置 pos。
+			// 返回的值是最大的匹配长度
+			len = search(I, req.old, req.oldsize, req.new + scan,
+						 req.newsize - scan, 0, req.oldsize, &pos);
 #if DEBUG == 1
-			printf("%d: len = %ld, scan = %ld, pos = %ld, scsc = %ld, req.newsize = %ld",count++,len,scan,pos, scsc, req.newsize);
+			printf("%d: len = %ld, scan = %ld, pos = %ld, scsc = %ld, req.newsize = %ld", count++, len, scan, pos, scsc, req.newsize);
 #endif
 			// 计算出当前偏移的 old 数据与 new 数据相同的字节个数，再与 len 比较
 			for (; scsc < scan + len; scsc++)
-				if ((scsc + lastoffset < req.oldsize) &&
-					(req.old[scsc + lastoffset] == req.new[scsc]))
+				// 越界检查，从这里可以看出来， scsc是new文件中的指针，lastoffset是新文件相对于旧文件在相同下标的偏移量
+				if ((scsc + lastoffset < req.oldsize) && (req.old[scsc + lastoffset] == req.new[scsc]))
 					oldscore++;
 #if DEBUG == 1
-			printf(", oldscore = %ld\n",oldscore);
+			printf(", oldscore = %ld, lastoffset = %ld\n", oldscore, lastoffset);
 #endif
-			// 如果相差小于 8 则继续 for 循环。
-            // 相差小于 8，可以认为插入的数据较少，没必要切换 old 数据的 offset，每切换一次就需要进行一次 diff 和 extra 处理。
-			if (((len == oldscore) && (len != 0)) ||
-				(len > oldscore + 8))
+			// 如果相差大于 8 或者完全相同则退出for循环。 (完全相同只有old和new文件是完全对齐的才有可能出现)
+			// 相差小于 8，可以认为插入的数据较少，\
+			没必要切换 old 数据的 offset，每切换一次就需要进行一次 diff 和 extra 处理。
+			if (((len == oldscore) && (len != 0)) || (len > oldscore + 8))
+			{
+#if DEBUG == 1
+				printf("break\n");
+#endif
 				break;
-
-			if ((scan + lastoffset < req.oldsize) &&
-				(req.old[scan + lastoffset] == req.new[scan]))
+			}
+			// 上面len大于oldscore+8或者len==oldscore的已经跳出去了，此时len < oldscore || oldescore < len < oldscore + 8
+			// 其中，len < oldscore的情况不会出现, 因为每次循环oldscore又开始重新计数，一定不会大于len
+			if ((scan + lastoffset < req.oldsize) && (req.old[scan + lastoffset] == req.new[scan]))
 				oldscore--;
 		};
 		// 对上一个位置到新位置之间的数据进行处理
 		if ((len != oldscore) || (scan == req.newsize))
 		{
+#if DEBUG == 1
+				printf("in\n");
+#endif
 			s = 0;
 			Sf = 0;
 			lenf = 0;
-            // 计算 diff string 的长度
+			// 计算 diff string 的长度
 			for (i = 0; (lastscan + i < scan) && (lastpos + i < req.oldsize);)
 			{
 				if (req.old[lastpos + i] == req.new[lastscan + i])
 					s++;
 				i++;
 
-                // 由于任务2中找的是差异较大的点，因此差异较大的部分就是该段数据的末尾数据，从头开始比较，通过以下判断可以近似找出类似的最长字符串。
-                /** Sf*2-lenf 和 s*2-i 都是等式： a*2 - b。
-* Sf*2-lenf可以理解为 上一组s和i，s*2-i计算出的值。
-* s*2 - i, i和s的增长步长都为1，也就是i走两步，s走一步就可以维持s*2 - i结果不变，
-如果结果要增加，也就是s增加的频率要>50%，即后续增加的数据超过50%的数据需要是相等的。*/
+				// 由于任务2中找的是差异较大的点，因此差异较大的部分就是该段数据的末尾数据，从头开始比较，通过以下判断可以近似找出类似的最长字符串。
+				/* Sf*2-lenf 和 s*2-i 都是等式： a*2 - b。
+					Sf*2-lenf可以理解为 上一组s和i，s*2-i计算出的值。
+					s*2 - i, i和s的增长步长都为1，也就是i走两步，s走一步就可以维持s*2 - i结果不变，
+					如果结果要增加，也就是s增加的频率要>50%，即后续增加的数据超过50%的数据需要是相等的。
+				*/
 				if (s * 2 - i > Sf * 2 - lenf)
 				{
 					Sf = s;
@@ -428,14 +439,14 @@ static int bsdiff_internal(const struct bsdiff_request req)
 					};
 				};
 			};
-            /* 上面lenf的值即为diff string的长度，该段数据剩余部分即可认为是extra string，
+			/* 上面lenf的值即为diff string的长度，该段数据剩余部分即可认为是extra string，
             这样长度相减即可获得extra string的长度;但是保存的diff string是新老数据的相差值，
             可以更好的被压缩，而extra string保存的就是原始数据，压缩层度不高，
             为了减少extea string的长度，采取了将部分extra string与下一段数据近似相同的数据遗留下来，
             在下一段数据可以充当diff string。
             scan等于newsize，就没有下一段数据了，因此这里需要判断scan小于newsize。
             */
-            
+
 			// 上面两段数据可能重叠，处理重叠
 			if (lastscan + lenf > scan - lenb)
 			{
@@ -485,7 +496,7 @@ static int bsdiff_internal(const struct bsdiff_request req)
 			lastscan = scan - lenb;
 			lastpos = pos - lenb;
 			lastoffset = pos - scan;
-            /*
+			/*
             lenf值即为diff string的长度；
             (scan-lenb)-(lastscan+lenf)即为extra string的长度。
             diff string保存的是相差值，可以很好被压缩。
