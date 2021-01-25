@@ -52,7 +52,9 @@ bsdiff算法会产生较大的空间占用
 
 字典排序更好
 
-[More on bsdiff and delta compression](http://richg42.blogspot.com/2015/11/more-on-bsdiff.html)
+使用更好的压缩算法，当前使用gzip2，可以使用：[More on bsdiff and delta compression](http://richg42.blogspot.com/2015/11/more-on-bsdiff.html)
+
+学习不同压缩算法，看能否不解压，在压缩文件基础上，基于压缩算法不同的结构，来直接生成差分文件
 
 # （6）出错回滚的原理、常用方法分别是？对比这些方法的优缺点。
 
