@@ -4,9 +4,48 @@
 
 [差异更新-BSDiff算法解析](https://blog.csdn.net/qazw9600/article/details/108111611)
 
+[安卓差分升级](https://help.aliyun.com/document_detail/170841.html?spm=a2c4g.11186623.2.15.2d75e53860bPQ9)
+
 # （1）BSDiff算法包含哪些基本步骤？
 
-**步骤1.**是所有差量更新算法的瓶颈，时间复杂度为O(nlogn),空间复杂度为O(n)，n为old文件的长度。BSDiff采用 Faster suffix sorting方法获得一个字典序，使用了类似于快速排序的二分思想，使用了bucket，I，V三个辅助数组。最终得到一个数组I，记录了以前缀分组的各个字符串组的最后一个字符串在old中的开始位置
+**步骤1.**是所有差量更新算法的瓶颈，时间复杂度为O(nlogn),空间复杂度为O(n)，n为old文件的长度。BSDiff采用 Faster suffix sorting方法获得一个字典序，使用了bucket，I，V三个辅助数组。最终得到一个数组I，记录了以前缀分组的各个字符串组的最后一个字符串在old中的开始位置。
+
+这里打印了一下I数组。原输入的文件内容是`This page is for people who already know some English`
+
+```
+$ ./bsdiff old new patch      
+old size = 53
+old string:  This page is for people who already know some English
+old string:  12345678901234567890123456789012345678901234567890123
+new size = 73
+new string:  This page is for people do not know some English, which means you are nt.
+53 45 27 12 9 35 4 16 40 23 46 0 32 6 28 33 44 8 22 31 18 13 7 48 52 1 25 10 2 50 36 21 49 29 43 47 37 26 42 19 14 38 5 17 20 15 30 11 3 51 41 39 24 34
+```
+
+I数组的第0个数表示的是长度，不用管。
+
+```
+45 27 12 9 35 4 16 40 23    == ' '
+46                          == 'E'
+0 							== 'T'
+32 6 28 					== 'a'
+33 							== 'd'
+44 8 22 31 18 				== 'e'
+13							== 'f' 
+7 48 						== 'g'
+52 1 25  					== 'h'
+10 2 50 					== 'i'
+36 							== 'k'
+21 49 29 					== 'l'
+43 							== 'm'
+47 37 						== 'n'
+26 42 19 14 38  			== 'o'
+5 17 20 15 					== 'p'
+30 							== 'r'
+11 3 51 41 					== 's'
+39 24 						== 'w'
+34							== 'y'
+```
 
 **步骤2.**是BSDiff产生patch包的核心部分，详细描述如下：
 
@@ -20,13 +59,13 @@
 
 ![4](https://img-blog.csdn.net/20160424125148292?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
 
-可以看出在用zip压缩之前的patch包是没有节约任何字符的，但diff strings可以被高效的压缩，故BSDiff是一个很依赖于压缩与解压的算法！
+可以看出在用zip压缩之前的patch包是没有节约任何字符的，但diff strings可以被高效的压缩，故BSDiff是一个很依赖于压缩与解压的算法
 
 # （2）BSDiff算法的时间、空间复杂度分别是？并据此推断该算法的瓶颈；
 
 BSDiff
 
-时间复杂度 O((m+n)logn) 空间复杂度 *max(17\*n,9\*n+m)+O(1)* 
+时间复杂度 O((n+m)logn) 空间复杂度 *max(17\*n,9\*n+m)+O(1)* 
 
 BSPatch
 
@@ -38,19 +77,20 @@ BSPatch
 
 # （3）为什么BSDiff算法不适用于压缩文件的差分以及小内存设备？
 
-压缩文件的结构依赖于不同的压缩算法, 压缩文件的new和old文件有重复的部分可能较少
-
-bsdiff算法会产生较大的空间占用
+1. 压缩文件的结构依赖于不同的压缩算法, 压缩文件的new和old文件有重复的部分可能较少
+2. bsdiff算法会产生较大的空间占用/patch包大小可能过大
 
 # （4）目前是否存在适用于压缩文件和小内存设备的差分算法？它们和BSDiff算法相比，做了哪些改进？
 
 [一种小内存设备系统升级的差分算法的制作方法](http://www.xjishu.com/zhuanli/55/201811416681.html)
 
+
+
 # （5）尝试提出BSDiff算法的优化思路和优化方法；
 
-找更好的压缩算法
+1. 找更好的压缩算法。 
 
-字典排序更好
+2. 字典排序更快，空间更少。
 
 [More on bsdiff and delta compression](http://richg42.blogspot.com/2015/11/more-on-bsdiff.html)
 
@@ -62,13 +102,13 @@ bsdiff算法会产生较大的空间占用
 
 方法1：数据转储（俗称备份）
 
-定期将系统复制到其他存储介质上保存起来。转储操作十分耗费时间和资源，不能频繁进行
+定期将系统复制到其他存储介质上保存起来。转储操作十分**耗费时间和资源**，不能频繁进行
 
 转储可以分为静态转储和动态转储
 
 - 静态转储：在操作系统没有进程运行时进行的转储操作，转储期间不能对操作系统有任何的修改。
 	- 得到的是一个一致性副本
-	- 不能热插拔
+	- **不能热插拔**
 - 动态转储：转储期间允许操作系统进行操作
 	- 必须把转储期间操作系统进行的活动记录下来，建立日志文件
 
@@ -313,43 +353,6 @@ static int bsdiff_internal(const struct bsdiff_request req)
 }
 ```
 
-这里打印了一下I数组。原输入的文件内容是`This page is for people who already know some English`
-
-```
-$ ./bsdiff old new patch      
-old size = 53
-old string:  This page is for people who already know some English
-old string:  12345678901234567890123456789012345678901234567890123
-new size = 73
-new string:  This page is for people do not know some English, which means you are nt.
-53 45 27 12 9 35 4 16 40 23 46 0 32 6 28 33 44 8 22 31 18 13 7 48 52 1 25 10 2 50 36 21 49 29 43 47 37 26 42 19 14 38 5 17 20 15 30 11 3 51 41 39 24 34
-```
-
-I数组的第0个数表示的是长度，不用管。
-
-```
-53 45 27 12 9 35 4 16 40 23 == ' '
-46                          == 'E'
-0 							== 'T'
-32 6 28 					== 'a'
-33 							== 'd'
-44 8 22 31 18 				== 'e'
-13							== 'f' 
-7 48 						== 'g'
-52 1 25  					== 'h'
-10 2 50 					== 'i'
-36 							== 'k'
-21 49 29 					== 'l'
-43 							== 'm'
-47 37 						== 'n'
-26 42 19 14 38  			== 'o'
-5 17 20 15 					== 'p'
-30 							== 'r'
-11 3 51 41 					== 's'
-39 24 						== 'w'
-34							== 'y'
-```
-
 # Some Test
 
 1. tar.xz格式下 
@@ -377,4 +380,4 @@ I数组的第0个数表示的是长度，不用管。
 1. 将bzip2压缩算法替换为xz等压缩率更高的压缩算法。可以使生成的patch文件更小。
 2. 在压缩文件上进行生成差分包没有头绪，还需要研究不同的压缩算法。
 3. 应用场景是什么？为什么需要在压缩文件上生成差分包，在客户端上存在的应该是已经解压之后的文件。在客户端上有原来的压缩文件吗？
-4. 是否可以先只做第一题，主要实现基于压缩包的差分数据生成？第一题的第三问中包含压缩数据的文件的压缩方法是第二问中的gz，lz4以及gzip吗？
+
