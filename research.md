@@ -92,7 +92,9 @@ BSPatch
 
 2. 字典排序更快，空间更少。
 
-[More on bsdiff and delta compression](http://richg42.blogspot.com/2015/11/more-on-bsdiff.html)
+使用更好的压缩算法，当前使用gzip2，可以使用：[More on bsdiff and delta compression](http://richg42.blogspot.com/2015/11/more-on-bsdiff.html)
+
+学习不同压缩算法，看能否不解压，在压缩文件基础上，基于压缩算法不同的结构，来直接生成差分文件
 
 # （6）出错回滚的原理、常用方法分别是？对比这些方法的优缺点。
 
@@ -380,4 +382,3 @@ static int bsdiff_internal(const struct bsdiff_request req)
 1. 将bzip2压缩算法替换为xz等压缩率更高的压缩算法。可以使生成的patch文件更小。
 2. 在压缩文件上进行生成差分包没有头绪，还需要研究不同的压缩算法。
 3. 应用场景是什么？为什么需要在压缩文件上生成差分包，在客户端上存在的应该是已经解压之后的文件。在客户端上有原来的压缩文件吗？
-
