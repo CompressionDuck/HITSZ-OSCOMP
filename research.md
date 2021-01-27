@@ -16,7 +16,7 @@
 $ ./bsdiff old new patch      
 old size = 53
 old string:  This page is for people who already know some English
-old string:  12345678901234567890123456789012345678901234567890123
+old string:  012345678901234567890123456789012345678901234567890123
 new size = 73
 new string:  This page is for people do not know some English, which means you are nt.
 53 45 27 12 9 35 4 16 40 23 46 0 32 6 28 33 44 8 22 31 18 13 7 48 52 1 25 10 2 50 36 21 49 29 43 47 37 26 42 19 14 38 5 17 20 15 30 11 3 51 41 39 24 34
@@ -382,3 +382,4 @@ static int bsdiff_internal(const struct bsdiff_request req)
 1. 将bzip2压缩算法替换为xz等压缩率更高的压缩算法。可以使生成的patch文件更小。
 2. 在压缩文件上进行生成差分包没有头绪，还需要研究不同的压缩算法。
 3. 应用场景是什么？为什么需要在压缩文件上生成差分包，在客户端上存在的应该是已经解压之后的文件。在客户端上有原来的压缩文件吗？
+
