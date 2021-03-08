@@ -4,13 +4,11 @@ try:
     pid = input("please input the pid you want to show its anoumous page:(dafault self):")
 except: #input nothing
     pid = "self"
-try: 
-    output_file_name = input("input the output file name(default self.sump):")
-except:
-    output_file_name = "self.dump"
+
+output_file_name = "data"
 print(output_file_name)
-maps_file = open("/proc/"+pid+"/maps", 'r')
-mem_file = open("/proc/"+pid+"/mem", 'rb', 0)
+maps_file = open("/proc/"+str(pid)+"/maps", 'r')
+mem_file = open("/proc/"+str(pid)+"/mem", 'rb', 0)
 output_file = open(output_file_name, 'wb')
 for line in maps_file.readlines():  # for each mapped region
     m = re.match(r'([0-9A-Fa-f]+)-([0-9A-Fa-f]+) ([-r])', line)

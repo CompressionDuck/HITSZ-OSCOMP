@@ -2,7 +2,7 @@
 
 ## 资料收集
 
-[赛道信息](https://github.com/oscomp/proj17-ota-based-on-bsdiff)
+[赛道信息](https://github.com/oscomp/proj64-linux-anony-page-compression)
 
 ## 看板
 
