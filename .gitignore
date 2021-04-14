@@ -1,3 +1,6 @@
 *.speed
 *.dump
-res
+res*
+*.data
+anony_data_page_per_file
+anony_data
