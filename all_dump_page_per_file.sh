@@ -12,12 +12,11 @@ cd $res_path
 cnt=0
 
 #对于/proc下的每个目录
-for i in $(ls /proc)
-do      #选择数字目录，代表程序pid
+for i in $(ls /proc);do
+      #选择数字目录，代表程序pid
     if echo $i | grep [0-9]; then
         python3 ../dump_page_per_file.py $i
-        if [ $? -eq 0 ]
-        then
+        if [ $? -eq 0 ];then
             cnt=$((cnt + 1))
         fi
     fi

@@ -9,14 +9,12 @@ res_path=./anony_data
 mkdir $res_path
 cd $res_path
 cnt=0
-for i in $(ls /proc)
-do
+for i in $(ls /proc);do
     if echo $i | grep [0-9]; then
         mkdir ./$i -p
         cd ./$i
         python3 ../../dump.py $i
-        if [ $? -eq 0 ]
-        then
+        if [ $? -eq 0 ];then
             cnt=$((cnt + 1))
         fi
         cd ..
