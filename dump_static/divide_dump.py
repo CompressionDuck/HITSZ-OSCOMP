@@ -14,10 +14,11 @@ print("正在打印程序号为%s的所有匿名页数据：" %pid)
 
 maps_file = open("/proc/"+pid+"/maps", 'r')
 mem_file = open("/proc/"+pid+"/mem", 'rb', 0)
-dir_path = pid
+dir_path = pid+".page"
 os.makedirs(dir_path, exist_ok=True)
 os.chdir(dir_path)
 cnt = 0
+page_size = 4*1024
 for line in maps_file.readlines():  # for each mapped region
     m = re.match(r'([0-9A-Fa-f]+)-([0-9A-Fa-f]+) ([-r])', line)
     list_line = line.split()
@@ -25,16 +26,21 @@ for line in maps_file.readlines():  # for each mapped region
         start = int(m.group(1), 16)
         end = int(m.group(2), 16)
         mem_file.seek(start)  # seek to region start
-        chunk = mem_file.read(end - start)  # read region contents
         
-        cnt = cnt + 1
-        out_name = f'{cnt}.data'
-        out_file = open(out_name, 'wb')
-        # print(line)
-        # out_file.write(str.encode(line))  # 输出起始地址
-        out_file.write(chunk)               # 输出4K大小的匿名页数据
-        # out_file.write(str.encode('\n'))  # 输出一个换行符，隔开匿名页
-        out_file.close()
+        
+        while start < end:
+            chunk = mem_file.read(page_size)  # read region contents
+            cnt = cnt + 1
+            out_name = f'{cnt}.data'
+            out_file = open(out_name, 'wb')
+            # print(line)
+            # out_file.write(str.encode(line))  # 输出起始地址
+            out_file.write(chunk)               # 输出4K大小的匿名页数据
+            # out_file.write(str.encode('\n'))  # 输出一个换行符，隔开匿名页
+            out_file.close()
+            start += page_size
+        
+        
         
 maps_file.close()
 mem_file.close()

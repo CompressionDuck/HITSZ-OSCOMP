@@ -4,7 +4,7 @@ if [ `whoami` != "root" ];then
         exit 1
 fi
 
-res_path=./divided_data
+res_path=./data_divide
 
 mkdir -p $res_path
 cd $res_path

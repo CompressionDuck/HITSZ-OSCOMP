@@ -1,10 +1,11 @@
 *.speed
+
 *.dump
-res*
 *.data
 data
-divided_data
+data_divide
 
 # grab.sh
 meg
 megt
+res*
