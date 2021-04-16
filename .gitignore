@@ -2,8 +2,8 @@
 *.dump
 res*
 *.data
-anony_data_page_per_file
-anony_data
+data
+divided_data
 
 # grab.sh
 meg
