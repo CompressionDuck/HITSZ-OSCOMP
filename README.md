@@ -20,8 +20,8 @@
 |---|---|
 |dump.py|导出单个程序pid的匿名页|
 |all_dump.sh|调用dump.py，导出所有程序的匿名页|
-|dump_page_per_file.py|按照一页一文件，打印单个程序的匿名页|
-|all_dump_page_per_file.sh|调用dump_page_per_file.py，按照一页一文件，打印所有程序的匿名页|
+|divide_dump.py|按照一页一文件，打印单个程序的匿名页|
+|divide_all_dump.sh|调用divide_dump.py，按照一页一文件，打印所有程序的匿名页|
 
 |grab_dynamic/|说明|
 |---|---|

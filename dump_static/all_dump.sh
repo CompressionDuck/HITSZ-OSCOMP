@@ -4,7 +4,7 @@ if [ `whoami` != "root" ];then
         exit 1
 fi
 
-res_path=./anony_data
+res_path=./data
 
 mkdir $res_path
 cd $res_path

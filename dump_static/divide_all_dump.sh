@@ -4,7 +4,7 @@ if [ `whoami` != "root" ];then
         exit 1
 fi
 
-res_path=./anony_data_page_per_file
+res_path=./divided_data
 
 mkdir -p $res_path
 cd $res_path
@@ -15,7 +15,7 @@ cnt=0
 for i in $(ls /proc);do
       #选择数字目录，代表程序pid
     if echo $i | grep [0-9]; then
-        python3 ../dump_page_per_file.py $i
+        python3 ../divide_dump.py $i
         if [ $? -eq 0 ];then
             cnt=$((cnt + 1))
         fi

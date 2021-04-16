@@ -14,7 +14,7 @@ print("正在打印程序号为%s的所有匿名页数据：" %pid)
 
 maps_file = open("/proc/"+pid+"/maps", 'r')
 mem_file = open("/proc/"+pid+"/mem", 'rb', 0)
-dir_path = "./pid_"+pid+"_anony_data"
+dir_path = pid
 os.makedirs(dir_path, exist_ok=True)
 os.chdir(dir_path)
 cnt = 0
