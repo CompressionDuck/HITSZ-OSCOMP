@@ -25,6 +25,8 @@ echo 1G > /sys/block/zram0/disksize
 mkswap /dev/zram0
 swapon /dev/zram0
 
+sysctl vm.swappiness=100
+
 printf "\n### start to grab dynamic anomynous data in \"result\" ###\n"
 printf "don't close this terminal while grabing anoy data\n"
 bash ./grab.sh

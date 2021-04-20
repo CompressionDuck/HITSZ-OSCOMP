@@ -11,7 +11,7 @@ while true; do
 	grep -e "zram-page:" meg > megt
 	linet=$(cat "megt" | wc -l )
     if [[ $lineh == $linet ]];then
-        sleep 1
+        sleep 0.001
         continue
     fi
     lineh=$((lineh+1))
@@ -28,5 +28,5 @@ while true; do
     done
 
     lineh=$linet
-    sleep 1
+    # sleep 0.001
 done
