@@ -8,6 +8,20 @@
 
 选择了[飞书文档](https://dgool05s1u.feishu.cn/sheets/shtcnn31Uu3GYhXZNMbwsDB9dcd?from=from_copylink)。
 
+## 测试
+运行grab_dynamic文件夹下的auto_grab.sh。直接配置好zram作为swap分区，并运行grab.sh。如果开启swapfile，需要关闭swapfile
+
+打开Ubuntu下的系统监控器，在资源选项卡下能看到swap占用情况
+
+然后，运行test_swap文件夹下的a.out。此文件由fill_mem.c编译而来，编译命令为：
+gcc fill_mem.c
+此文件每隔0.2s分配1M空间，会迅速占满内存，当内存满后，继续分配的数据将进入交换区swap中，此时开启了grab.sh，那么会抓取数据到result中
+
+## 问题
+以上测试过程中，swap分区已经600M了，但是result才几十M。
+可能猜测的问题：demsg显示，它把旧的printk内容删除了，可能是grab.sh命令太慢的原因。但是将grab.sh的sleep改为0.001s，任然有这个问题
+
+
 ## 说明
 |文件夹|说明|
 |---|---|
