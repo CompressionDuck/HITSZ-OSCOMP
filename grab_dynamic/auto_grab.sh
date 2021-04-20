@@ -13,7 +13,7 @@ if [ -n "$(swapon -s)" ]; then
 	
 	exit 1
 else
-	printf "\ngood.there is no swap device.\n"
+	printf "good. There is no swap device.\n"
 fi
 
 printf "\n### enable zram device as the only swap device ###\n\n"
@@ -26,4 +26,5 @@ mkswap /dev/zram0
 swapon /dev/zram0
 
 printf "\n### start to grab dynamic anomynous data in \"result\" ###\n"
+printf "don't close this terminal while grabing anoy data\n"
 bash ./grab.sh
