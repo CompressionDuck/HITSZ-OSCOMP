@@ -9,6 +9,7 @@ data_path = "./data_divide"
 # 字典保存相同page哈希值的次数，也就是page完全相同的次数
 d = dict()
 cnt = 0
+# ls -lR |grep "^-"|wc -l
 cmd_tot = "ls -lR " + data_path + " |grep \"^-\"|wc -l"
 tot = int(os.popen(cmd_tot).readlines()[0])
 print("一共%d个页" %tot)
@@ -45,7 +46,11 @@ for ha, times in d.items():
 
 print("总共%d个页" %cnt)
 if times_cnt:
-    for same, times in times_cnt.items():
-        print("%2d个页面相同的，出现了%4d次" %(same, times))
+    out_file = open("hash.result", 'w')
+    same_list = sorted(times_cnt.keys())
+    same_list.reverse()
+    for same in same_list:
+        out_file.write(f"出现了{same_list[same]:5d}次，{same:9d}个页面相同的情况\n")
+        # print("%2d个页面相同的，出现了%4d次" %(same, times))
 else:
     print("没有一个页面相同。。。")
