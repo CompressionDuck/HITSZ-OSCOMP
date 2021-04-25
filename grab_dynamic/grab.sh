@@ -1,32 +1,10 @@
-#!/bin/bash
-#author:ldq
+# /bin/sh
 
-declare -i counter=1
-declare -i lineh
-declare -i linet
-lineh=0
-linet=0
+# clear dmesg_log
+echo "" > dmesg_log
+
+log_buf_size = $((8*1024*1024)) # 8M
 while true; do
-	sudo dmesg > meg
-	grep -e "zram-page:" meg > megt
-	linet=$(cat "megt" | wc -l )
-    if [[ $lineh == $linet ]];then
-        sleep 0.001
-        continue
-    fi
-    lineh=$((lineh+1))
-    
-    for num in $(sed -n ''$lineh',$p' megt|awk '{print $4}' );do
-        if [[ "$counter" -lt 4 ]]; then 
-            counter=$((counter+1))
-            printf "%s\t" $num >> result
-        else
-            counter=1
-            printf "%s\n" $num >> result
-        fi
-
-    done
-
-    lineh=$linet
-    # sleep 0.001
+    # show realtime, read log and clear it, set buffer size = 8M
+    dmesg --read-clear --reltime --buffer-size $log_buf_size >> dmesg_log
 done
