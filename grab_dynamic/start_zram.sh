@@ -17,8 +17,7 @@ else
 fi
 
 printf "\n### enable zram device as the only swap device ###\n\n"
-rmmod zram
-insmod ./zram.ko
+
 modprobe -v zram num_devices=1
 echo 1G > /sys/block/zram0/disksize
 

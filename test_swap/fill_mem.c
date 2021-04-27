@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
         mb++;
         printf("Allocated %d MB\n", multiplier * mb);
         sleep(1); // time unit: 1 second
-        // usleep(0.1) sleep milisecond
+        //usleep(100000); //sleep 0.0000001s
     }      
     return 0;
 }
