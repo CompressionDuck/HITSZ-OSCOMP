@@ -10,10 +10,11 @@ log_buf_size=$((8*1024*1024)) # 8M
 # clear OS boot info
 dmesg --clear
 
+dmesg --follow  --read-clear --notime --buffer-size $log_buf_size >> $file
 # grab zram_swap info
-while true; do
+#while true; do
     # Don't show time, read log and clear it, set buffer size = 8M
-    dmesg --read-clear --notime --buffer-size $log_buf_size >> $file
-    du -sh $file
-    sleep 0.01
-done
+#    dmesg --read-clear --notime --buffer-size $log_buf_size >> $file
+#    du -sh $file
+#     sleep 0.01
+# done
