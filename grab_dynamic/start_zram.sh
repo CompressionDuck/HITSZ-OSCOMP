@@ -5,8 +5,9 @@ if [ $(whoami) != "root" ];then
 fi
 
 printf "List all swap devices:\n\n"
-swapon -s
+
 if [ -n "$(swapon -s)" ]; then
+	swapon -s
 	printf "\n### please swapoff all above devices! ###\n"
 	printf "so we can use zram as the only swap device\n"
 	printf "example: sudo swapoff /swapfile\n"
@@ -25,4 +26,7 @@ mkswap /dev/zram0
 swapon /dev/zram0
 
 sysctl vm.swappiness=100
+
+printf "\n### zram has started! ###\n"
+zramctl
 

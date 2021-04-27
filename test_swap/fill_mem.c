@@ -20,8 +20,8 @@ int main(int argc, char** argv) {
         //memset(buffer, 1, multiplier * 1024*1024);
         mb++;
         printf("Allocated %d MB\n", multiplier * mb);
-        sleep(1); // time unit: 1 second
-        //usleep(100000); //sleep 0.0000001s
+        // sleep(1); // time unit: 1 second
+        //usleep(100000); //sleep 1us
     }      
     return 0;
 }
