@@ -4,29 +4,20 @@ if [ $(whoami) != "root" ];then
 	exit 1
 fi
 
-printf "List all swap devices:\n\n"
-
-if [ -n "$(swapon -s)" ]; then
-	swapon -s
-	printf "\n### please swapoff all above devices! ###\n"
-	printf "so we can use zram as the only swap device\n"
-	printf "example: sudo swapoff /swapfile\n"
-	
-	exit 1
-else
-	printf "good. There is no swap device.\n"
-fi
-
-printf "\n### enable zram device as the only swap device ###\n\n"
-
 modprobe -v zram num_devices=1
 echo 1G > /sys/block/zram0/disksize
 
 mkswap /dev/zram0
-swapon /dev/zram0
+if [ "$?" != "0" ];then
+	printf "mkswap error\n"
+	exit 1
+fi
 
+# set priority = 0, > -2 of the /swapfile
+# so zram0 will be used before /swapfile
+swapon -p 0 /dev/zram0
+
+# let OS be most willing to use swap 
 sysctl vm.swappiness=100
 
 printf "\n### zram has started! ###\n"
-zramctl
-
