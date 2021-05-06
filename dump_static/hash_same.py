@@ -3,8 +3,13 @@
 import hashlib
 import os
 import concurrent.futures
+import sys
 
-data_path = "./data_divide"
+if len(sys.argv) < 2:
+    print("please input hash directory")
+    exit()
+
+data_path = sys.argv[1]
 
 # 字典保存相同page哈希值的次数，也就是page完全相同的次数
 d = dict()
@@ -50,7 +55,7 @@ if times_cnt:
     same_list = sorted(times_cnt.keys())
     same_list.reverse()
     for same in same_list:
-        out_file.write(f"出现了{same_list[same]:5d}次，{same:9d}个页面相同的情况\n")
+        out_file.write(f"出现了{times_cnt[same]:5d}次，{same:9d}个页面相同的情况\n")
         # print("%2d个页面相同的，出现了%4d次" %(same, times))
 else:
     print("没有一个页面相同。。。")
