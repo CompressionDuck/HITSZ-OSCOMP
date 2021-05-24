@@ -10,7 +10,7 @@
 
 ## 飞书文档
 
-[飞书文档链接](https://dgool05s1u.feishu.cn/sheets/shtcnn31Uu3GYhXZNMbwsDB9dcd?from=from_copylink)
+[飞书文档链接](https://dgool05s1u.feishu.cn/docs/doccnLzlXxf0JhIrM60NHJBYN2d)
 
 
 ## 文件说明
